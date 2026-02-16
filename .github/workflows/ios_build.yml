@@ -10,10 +10,10 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
@@ -35,7 +35,7 @@ jobs:
           zip -r AMDMuhasebe_Xcode.zip AMDMuhasebe-ios
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ios-xcode-project
           path: AMDMuhasebe_Xcode.zip
