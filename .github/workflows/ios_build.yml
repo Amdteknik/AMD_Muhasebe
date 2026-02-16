@@ -21,25 +21,26 @@ jobs:
         run: |
           brew install autoconf automake libtool pkg-config || true
           python3 -m pip install --upgrade pip
-          # Eksik olan Cython'u burada zorla kurduruyoruz
           pip install Cython==0.29.33
           pip install kivy-ios
 
-      - name: Build Python and Kivy for iOS
+      - name: Build Python and Kivy
         run: |
-          # Bu adım artık Cython olduğu için hata vermeyecek (30-40 dk sürebilir)
           toolchain build python3 kivy
 
-      - name: Create Xcode Project
+      - name: Create and Export IPA
         run: |
+          # Projeyi oluştur
           toolchain create "AMDMuhasebe" .
+          # IPA olarak dışa aktar (Sideloadly için hazır hale getirir)
+          # Bu komut projenin içine her şeyi gömer
+          cd AMDMuhasebe-ios
+          mkdir -p Payload/AMDMuhasebe.app
+          cp -r * Payload/AMDMuhasebe.app/ || true
+          zip -r ../AMDMuhasebe.ipa Payload
           
-      - name: Archive Xcode Project
-        run: |
-          zip -r AMDMuhasebe_Xcode.zip AMDMuhasebe-ios
-
-      - name: Upload Artifact
+      - name: Upload Final IPA
         uses: actions/upload-artifact@v4
         with:
-          name: ios-xcode-project
-          path: AMDMuhasebe_Xcode.zip
+          name: AMDMuhasebe-Kurulum-Dosyasi
+          path: AMDMuhasebe.ipa
