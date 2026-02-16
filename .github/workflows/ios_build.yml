@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -25,12 +25,10 @@ jobs:
 
       - name: Build Python and Kivy for iOS
         run: |
-          # Bu adım Kivy'yi iOS için hazırlar, sabırla bekliyoruz (20-30 dk)
           toolchain build python3 kivy
 
       - name: Create Xcode Project
         run: |
-          # main.py artık dışarıda olduğu için direkt '.' kullanıyoruz
           toolchain create "AMDMuhasebe" .
           
       - name: Archive Xcode Project
