@@ -1,0 +1,41 @@
+name: Build iOS IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install System Dependencies
+        run: |
+          brew install autoconf automake libtool pkg-config
+          pip install kivy-ios
+
+      - name: Build Python and Kivy for iOS
+        run: |
+          toolchain build python3 kivy
+
+      - name: Create Xcode Project
+        run: |
+          toolchain create AMDMuhasebe .
+          
+      - name: Archive Xcode Project
+        run: |
+          zip -r AMDMuhasebe_Xcode.zip AMDMuhasebe-ios
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ios-xcode-project
+          path: AMDMuhasebe_Xcode.zip
