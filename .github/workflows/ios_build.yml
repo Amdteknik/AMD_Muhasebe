@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-13 # Daha stabil bir sürüm seçtik
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -15,26 +15,34 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.10' # Versiyonu güncelledik
 
       - name: Install System Dependencies
         run: |
-          brew install autoconf automake libtool pkg-config
+          # pkg-config zaten yüklü olduğu için hata vermemesi için güncelledik
+          brew install autoconf automake libtool
           pip install kivy-ios
 
       - name: Build Python and Kivy for iOS
         run: |
+          # toolchain'in nerede olduğunu garantiye alıyoruz
+          python3 -m pip install --upgrade pip
           toolchain build python3 kivy
 
       - name: Create Xcode Project
         run: |
-          toolchain create AMDMuhasebe .
+          # Dosya yolunu garantiye almak için klasör kontrolü ekledik
+          toolchain create "AMDMuhasebe" .
           
       - name: Archive Xcode Project
         run: |
           zip -r AMDMuhasebe_Xcode.zip AMDMuhasebe-ios
 
       - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-xcode-project
+          path: AMDMuhasebe_Xcode.zip
         uses: actions/upload-artifact@v4
         with:
           name: ios-xcode-project
