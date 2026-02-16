@@ -19,19 +19,19 @@ jobs:
 
       - name: Install System Dependencies
         run: |
-          # Hata verse bile devam etmesi için '|| true' ekledik
           brew install autoconf automake libtool pkg-config || true
           python3 -m pip install --upgrade pip
+          # Eksik olan Cython'u burada zorla kurduruyoruz
+          pip install Cython==0.29.33
           pip install kivy-ios
 
       - name: Build Python and Kivy for iOS
         run: |
-          # Toolchain yolunu garantiye alıyoruz
+          # Bu adım artık Cython olduğu için hata vermeyecek (30-40 dk sürebilir)
           toolchain build python3 kivy
 
       - name: Create Xcode Project
         run: |
-          # Dosyalar en dışta (.), proje adı AMDMuhasebe
           toolchain create "AMDMuhasebe" .
           
       - name: Archive Xcode Project
