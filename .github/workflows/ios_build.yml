@@ -25,12 +25,12 @@ jobs:
 
       - name: Build Python and Kivy for iOS
         run: |
+          # Bu adım Kivy'yi iOS için hazırlar, sabırla bekliyoruz (20-30 dk)
           toolchain build python3 kivy
 
       - name: Create Xcode Project
         run: |
-          # Eğer kodların "AMD Muhasebe" klasörünün içindeyse oraya odaklanıyoruz
-          # Klasör adındaki boşluğu sildik veya tırnak içine aldık
+          # main.py artık dışarıda olduğu için direkt '.' kullanıyoruz
           toolchain create "AMDMuhasebe" .
           
       - name: Archive Xcode Project
@@ -38,10 +38,6 @@ jobs:
           zip -r AMDMuhasebe_Xcode.zip AMDMuhasebe-ios
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ios-xcode-project
-          path: AMDMuhasebe_Xcode.zip
         uses: actions/upload-artifact@v4
         with:
           name: ios-xcode-project
